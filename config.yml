@@ -1,0 +1,8 @@
+#server 地址
+server_url: "127.0.0.1:4000"
+#log 地址
+log_path: "requests.log"
+#redis地址
+# redis_url: "redis://127.0.0.1:6379"
+#mysql地址
+db_url: "sqlite://tn.db"
