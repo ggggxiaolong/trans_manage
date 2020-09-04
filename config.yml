@@ -6,3 +6,5 @@ log_path: "requests.log"
 # redis_url: "redis://127.0.0.1:6379"
 #mysql地址
 db_url: "sqlite://tn.db"
+#jwt key
+token_key: "secret"

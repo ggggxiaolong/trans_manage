@@ -5,14 +5,41 @@ extern crate lazy_static;
 extern crate rbatis_macro_driver;
 
 pub mod config;
+pub mod controller;
 pub mod dao;
-pub mod service;
 pub mod domain;
+pub mod service;
+pub mod utils;
 
-use actix_web::{middleware, App, HttpResponse, HttpServer, Responder, web};
+use crate::utils::session::Session;
 use actix_cors::Cors;
+use actix_web::{guard, middleware, web, App, HttpResponse, HttpServer, Responder};
+use async_graphql::http::{playground_source, GraphQLPlaygroundConfig};
+use async_graphql::{EmptyMutation, EmptySubscription, Schema};
+use async_graphql_actix_web::{GQLRequest, GQLResponse};
 use config::CONFIG;
+use controller::{gen_schema, Query};
 use dao::RB;
+
+type MySchema = Schema<Query, EmptyMutation, EmptySubscription>;
+
+async fn index(
+    schema: web::Data<MySchema>,
+    gql_request: GQLRequest,
+    session: Session,
+) -> GQLResponse {
+    let mut query = gql_request.into_inner();
+    query = query.data(session);
+    query.execute(&schema).await.into()
+}
+
+async fn gql_playgound() -> HttpResponse {
+    HttpResponse::Ok()
+        .content_type("text/html; charset=utf-8")
+        .body(playground_source(
+            GraphQLPlaygroundConfig::new("/graphql"),
+        ))
+}
 
 #[actix_rt::main]
 async fn main() -> std::io::Result<()> {
@@ -29,20 +56,16 @@ async fn main() -> std::io::Result<()> {
                     .max_age(3600)
                     .finish(),
             )
-            // .data(web::PayloadConfig::new(1024 * 1024 * 50))
             .data(web::JsonConfig::default().limit(1024 * 1024 * 50))
-            // .data(app_state.clone())
-            // .service(
-            //     web::resource("/graphql")
-            //         .app_data(web::JsonConfig::default().limit(1024 * 1024 * 50))
-            //         .route(web::post().to(api_graphql)),
-            // )
-        // .service(test_api)
-        // .service(test_api2)
+            .data(gen_schema())
+            .service(web::resource("/graphql").guard(guard::Get()).to(gql_playgound))
+            .service(
+                web::resource("/graphql")
+                    .app_data(web::JsonConfig::default().limit(1024 * 1024 * 50))
+                    .route(web::post().to(index)),
+            )
     })
     .bind(&CONFIG.server_url)?
     .run()
     .await
 }
-
-

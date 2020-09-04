@@ -1,8 +1,8 @@
 
-pub struct SynUserService {}
+pub struct SysUserService {}
 
-impl SynUserService {
-    pub async fn login(){}
-    pub async fn change_pass(){}
-    pub async fn refresh_token(){}
+impl SysUserService {
+    pub async fn login(mail: String, pass: String){}
+    pub async fn change_pass(mail: String, old_pass: String, new_pass: String){}
+    pub async fn refresh_token(token: String){}
 }

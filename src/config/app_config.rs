@@ -7,6 +7,7 @@ const CONFIG_FILE: &str = "config.yml";
 pub struct ApplicationConfig {
     pub server_url: String,
     pub db_url: String,
+    pub token_key: String,
 }
 
 impl Default for ApplicationConfig {
@@ -18,7 +19,8 @@ impl Default for ApplicationConfig {
         let doc = YamlLoader::load_from_str(&yml_data).unwrap();
         let server_url = get_cfg(&doc, "server_url", "127.0.0.1:4000");
         let db_url = get_cfg(&doc, "db_url", "tn.db");
-        Self { server_url, db_url }
+        let token_key = get_cfg(&doc, "token_key", "secret");
+        Self { server_url, db_url, token_key }
     }
 }
 

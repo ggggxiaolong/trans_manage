@@ -15,7 +15,8 @@ lazy_static = "1.4.0"
 #log
 env_logger = "0.7.1"
 #runtime
-tokio = { version = "0.2", features = ["full"] }
+# tokio = { version = "0.2", features = ["full"] }
+async-trait = "0.1.40"
 #rbatis orm dep
 rbatis-core = { version = "1.5.0", features = ["all"]}
 rbatis =  { version = "1.5.0" }
@@ -37,3 +38,7 @@ uuid = "0.8"
 md5 = "0.7.0"
 
 yaml-rust = "0.4"
+
+async-graphql = "1.17.21"
+async-graphql-actix-web = "1.17.18"
+futures = "0.3.5"
