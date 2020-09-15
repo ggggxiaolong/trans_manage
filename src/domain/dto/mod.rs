@@ -1,7 +1,7 @@
-use async_graphql::{Enum, SimpleObject};
+use async_graphql::*;
 
 // 接口传输对象
-#[Enum]
+#[derive(GQLEnum, Copy, Clone, Eq, PartialEq)]
 pub enum LanaguageSearchType {
     All,
     New,
@@ -9,7 +9,7 @@ pub enum LanaguageSearchType {
     Change,
 }
 
-#[SimpleObject]
+#[derive(GQLSimpleObject)]
 pub struct UpdateLang {
     pub id: i32,
     pub en: Option<String>,
@@ -32,7 +32,7 @@ pub struct UpdateLang {
     pub mode_name: Option<String>,
 }
 
-#[SimpleObject]
+#[derive(GQLSimpleObject)]
 pub struct AddLang {
     pub en: String,
     pub ja: Option<String>,

@@ -2,9 +2,9 @@ use async_graphql::{ErrorExtensions, FieldError};
 use chrono::NaiveDateTime;
 use serde::{Serialize, Deserialize};
 use serde_json::json;
-use async_graphql::{SimpleObject};
+use async_graphql::*;
 // 前端数据
-#[SimpleObject]
+#[derive(GQLSimpleObject)]
 pub struct Token {
     access_token: String,
     refresh_token: String,
@@ -19,13 +19,13 @@ impl Token {
     }
 }
 
-#[SimpleObject]
+#[derive(GQLSimpleObject)]
 pub struct Project {
-    id: i32,
-    name: String,
+    pub id: i32,
+    pub name: String,
 }
 
-#[SimpleObject]
+#[derive(GQLSimpleObject)]
 pub struct Lang {
     id: i32,
     user_id: i32,
@@ -84,8 +84,7 @@ pub struct Lang {
     update_time: NaiveDateTime,
 }
 
-#[SimpleObject]
-#[derive(Serialize, Deserialize, Clone)]
+#[derive(GQLSimpleObject, Serialize, Deserialize, Clone)]
 pub struct User {
     pub id: i32,
     pub username: String,

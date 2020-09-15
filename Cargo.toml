@@ -8,9 +8,9 @@ edition = "2018"
 
 [dependencies]
 #serde and base types
-serde = { version = "1.0", features = ["derive"] }
-serde_json = "1.0"
-chrono = { version = "0.4", features = ["serde"] }
+serde = { version = "1.0.116", features = ["derive"] }
+serde_json = "1.0.57"
+chrono = { version ="0.4.15", features = ["serde"] }
 lazy_static = "1.4.0"
 #log
 env_logger = "0.7.1"
@@ -18,18 +18,18 @@ env_logger = "0.7.1"
 # tokio = { version = "0.2", features = ["full"] }
 async-trait = "0.1.40"
 #rbatis orm dep
-rbatis-core = { version = "1.5.0", features = ["all"]}
-rbatis =  { version = "1.5.0" }
-rbatis-macro-driver = { version = "1.5.0" }
+rbatis-core = { version = "1.5.2", features = ["all"]}
+rbatis =  { version = "1.5.2" }
+rbatis-macro-driver = { version = "1.5.2" }
 
 #web server
-actix-web = "2.0"
-actix-http = "1.0"
+actix-web = "3.0.1"
+actix-http = "2.0.0"
 actix-rt = "1.1.1"
-actix-cors = "0.2.0"
+actix-cors = "0.3.0"
 
 #redis
-redis = "0.17.0"
+# redis = "0.17.0"
 
 #jwt
 jsonwebtoken = "7"
@@ -39,6 +39,6 @@ md5 = "0.7.0"
 
 yaml-rust = "0.4"
 
-async-graphql = "1.17.21"
-async-graphql-actix-web = "1.17.18"
+async-graphql = "2.0.0-alpha.7"
+async-graphql-actix-web = "2.0.0-alpha.7"
 futures = "0.3.5"

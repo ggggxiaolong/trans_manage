@@ -21,6 +21,6 @@ impl FromRequest for Session {
                 _ => None
             }
         } else {None};
-        ok(Session{user: user,})
+        ok(Session{user,})
     }
 }

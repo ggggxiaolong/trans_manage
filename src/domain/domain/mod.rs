@@ -1,6 +1,7 @@
 use rbatis::crud::CRUDEnable;
 use serde::{Deserialize, Serialize};
 use chrono::NaiveDateTime;
+use crate::domain::vo::*;
 
 /// 数据库对象
 #[derive(CRUDEnable, Serialize, Deserialize, Clone, Debug)]
@@ -52,8 +53,17 @@ pub struct DBUser {
 
 #[derive(CRUDEnable, Serialize, Deserialize, Clone, Debug)]
 pub struct DBProject {
-    id: i32,
-    name: String,
+    pub id: i32,
+    pub name: String,
+}
+
+impl DBProject {
+    pub fn to_vo(&self) -> Project{
+        Project{
+            id: self.id,
+            name: self.name.clone()
+        }
+    }
 }
 
 #[derive(CRUDEnable, Serialize, Deserialize, Clone, Debug)]

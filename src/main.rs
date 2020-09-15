@@ -18,7 +18,7 @@ use async_graphql::http::{playground_source, GraphQLPlaygroundConfig};
 use async_graphql::{EmptyMutation, EmptySubscription, Schema};
 use async_graphql_actix_web::{GQLRequest, GQLResponse};
 use config::CONFIG;
-use controller::{gen_schema, Query};
+use controller::{gen_schema, query::Query};
 use dao::RB;
 
 type MySchema = Schema<Query, EmptyMutation, EmptySubscription>;
@@ -30,7 +30,7 @@ async fn index(
 ) -> GQLResponse {
     let mut query = gql_request.into_inner();
     query = query.data(session);
-    query.execute(&schema).await.into()
+    schema.execute(query).await.into()
 }
 
 async fn gql_playgound() -> HttpResponse {
