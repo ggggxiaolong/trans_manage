@@ -1,9 +1,6 @@
 #[macro_use]
 extern crate lazy_static;
 
-#[macro_use]
-extern crate rbatis_macro_driver;
-
 pub mod config;
 pub mod controller;
 pub mod dao;
@@ -19,7 +16,6 @@ use async_graphql::{EmptyMutation, EmptySubscription, Schema};
 use async_graphql_actix_web::{GQLRequest, GQLResponse};
 use config::CONFIG;
 use controller::{gen_schema, query::Query};
-use dao::RB;
 
 type MySchema = Schema<Query, EmptyMutation, EmptySubscription>;
 
@@ -45,8 +41,7 @@ async fn gql_playgound() -> HttpResponse {
 async fn main() -> std::io::Result<()> {
     std::env::set_var("RUST_LOG", "actix_web=info");
     env_logger::init();
-    RB.link(&CONFIG.db_url).await.unwrap();
-    // Start http server
+    dao::DBPool::init_pool(dao::DBPool::create_pool().await);
     HttpServer::new(move || {
         App::new()
             .wrap(middleware::Logger::default())

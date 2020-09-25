@@ -3,6 +3,8 @@ use chrono::NaiveDateTime;
 use serde::{Serialize, Deserialize};
 use serde_json::json;
 use async_graphql::*;
+use crate::domain::domain::Project;
+
 // 前端数据
 #[derive(GQLSimpleObject)]
 pub struct Token {
@@ -20,13 +22,22 @@ impl Token {
 }
 
 #[derive(GQLSimpleObject)]
-pub struct Project {
+pub struct VOProject {
     pub id: i32,
     pub name: String,
 }
 
+impl From<Project> for VOProject{
+    fn from(p: Project) -> Self {
+        VOProject{
+            id: p.id,
+            name: p.name,
+        }
+    }
+}
+
 #[derive(GQLSimpleObject)]
-pub struct Lang {
+pub struct VOLang {
     id: i32,
     user_id: i32,
     en: String,
@@ -85,7 +96,7 @@ pub struct Lang {
 }
 
 #[derive(GQLSimpleObject, Serialize, Deserialize, Clone)]
-pub struct User {
+pub struct VOUser {
     pub id: i32,
     pub username: String,
     pub mail: String,

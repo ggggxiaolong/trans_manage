@@ -1,6 +1,6 @@
 use async_graphql::*;
 use crate::service::SYS_PROJECT_SERVICE;
-use crate::domain::vo::{Project, CustomError};
+use crate::domain::vo::{VOProject, CustomError};
 
 pub struct Query ;
 
@@ -8,7 +8,7 @@ pub struct Query ;
 impl Query {
     #[field(desc = "查询所有的项目信息")]
     //-> FieldResult<Token>
-    async fn projects(&self) -> FieldResult<Vec<Project>>  {
+    async fn projects(&self) -> FieldResult<Vec<VOProject>>  {
         SYS_PROJECT_SERVICE.all_project().await.map_err(|e|CustomError::Internal(e.to_string()).extend())
     }
 

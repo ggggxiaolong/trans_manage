@@ -2,10 +2,10 @@ use actix_web::{FromRequest, Error, HttpRequest };
 use actix_web::dev::Payload;
 use futures::future::{ok, Ready};
 use super::jwt::validate_token;
-use crate::domain::vo::User;
+use crate::domain::vo::VOUser;
 
 pub struct Session {
-    pub user: Option<User>,
+    pub user: Option<VOUser>,
 }
 
 impl FromRequest for Session {
