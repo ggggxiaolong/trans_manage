@@ -1,21 +1,34 @@
 use async_graphql::*;
-use crate::service::SYS_PROJECT_SERVICE;
-use crate::domain::vo::{VOProject, CustomError};
+use crate::service::{SYS_PROJECT_SERVICE, SYS_LANG_SERVICE};
+use crate::domain::vo::{VOProject, VOLang};
+use crate::domain::dto::LanguageSearchType;
 
-pub struct Query ;
+pub struct Query;
 
-#[GQLObject]
+#[Object]
 impl Query {
-    #[field(desc = "查询所有的项目信息")]
-    //-> FieldResult<Token>
-    async fn projects(&self) -> FieldResult<Vec<VOProject>>  {
-        SYS_PROJECT_SERVICE.all_project().await.map_err(|e|CustomError::Internal(e.to_string()).extend())
+    async fn projects(&self) -> FieldResult<Vec<VOProject>> {
+        SYS_PROJECT_SERVICE.all_project().await.extend()
     }
 
-    async fn borrow_from_context_data<'ctx>(
-        &self,
-        ctx: &'ctx Context<'_>
-    ) -> FieldResult<&'ctx String> {
-        ctx.data::<String>()
+    async fn lang(&self,
+                  #[graphql(default = 0)]
+                  page: i32,
+                  #[graphql(default = 20)]
+                  page_size: i32,
+                  #[graphql(default)]
+                  search: Option<String>,
+                  #[graphql(default = 1)]
+                  project_id: i32,
+                  #[graphql(default)]
+                  status_type: LanguageSearchType) -> FieldResult<Vec<VOLang>> {
+        SYS_LANG_SERVICE.page_language(page, page_size, project_id,search,status_type ).await.extend()
     }
+
+    // async fn borrow_from_context_data<'ctx>(
+    //     &self,
+    //     ctx: &'ctx Context<'_>,
+    // ) -> FieldResult<&'ctx String> {
+    //     ctx.data::<String>()
+    // }
 }

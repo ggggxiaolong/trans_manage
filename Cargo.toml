@@ -18,27 +18,28 @@ env_logger = "0.7.1"
 # tokio = { version = "0.2", features = ["full"] }
 async-trait = "0.1.40"
 #sqlx orm dep
-sqlx = { version = "0.4.0-beta.1", features = ["sqlite"] }
+sqlx = { version = "0.4.0-beta.1", features = ["sqlite", "chrono" ] }
 
 #web server
-actix-web = "3.0.1"
+actix-web = "3.0.2"
 actix-http = "2.0.0"
 actix-rt = "1.1.1"
-actix-cors = "0.3.0"
+actix-cors = "0.4.0"
 
 #redis
 # redis = "0.17.0"
 
 #jwt
 jsonwebtoken = "7"
+bcrypt="0.8.2"
 #uuid
 #uuid = "0.8"
 md5 = "0.7.0"
 
 yaml-rust = "0.4"
 
-async-graphql = "2.0.0-alpha.7"
-async-graphql-actix-web = "2.0.0-alpha.7"
+async-graphql = "2.0.0-alpha.21"
+async-graphql-actix-web = "2.0.0-alpha.21"
 futures = "0.3.5"
 once_cell = "1.4.1"
 

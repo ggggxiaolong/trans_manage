@@ -3,10 +3,11 @@ use chrono::NaiveDateTime;
 use serde::{Serialize, Deserialize};
 use serde_json::json;
 use async_graphql::*;
-use crate::domain::domain::Project;
+use crate::domain::domain::{Project, User, Lang};
+use sqlx::{Error as SqlxError};
 
 // 前端数据
-#[derive(GQLSimpleObject)]
+#[derive(SimpleObject)]
 pub struct Token {
     access_token: String,
     refresh_token: String,
@@ -15,13 +16,13 @@ pub struct Token {
 impl Token {
     pub fn new(access_token: String, refresh_token: String) -> Token {
         Token {
-            access_token: access_token,
-            refresh_token: refresh_token,
+            access_token,
+            refresh_token,
         }
     }
 }
 
-#[derive(GQLSimpleObject)]
+#[derive(SimpleObject)]
 pub struct VOProject {
     pub id: i32,
     pub name: String,
@@ -36,7 +37,7 @@ impl From<Project> for VOProject{
     }
 }
 
-#[derive(GQLSimpleObject)]
+#[derive(SimpleObject)]
 pub struct VOLang {
     id: i32,
     user_id: i32,
@@ -95,11 +96,64 @@ pub struct VOLang {
     update_time: NaiveDateTime,
 }
 
-#[derive(GQLSimpleObject, Serialize, Deserialize, Clone)]
+impl From<Lang> for VOLang {
+    fn from(l: Lang) -> Self {
+        VOLang{
+            id: l.id,
+            user_id: l.user_id,
+            en: l.en,
+            ja: l.ja,
+            ko: l.ko,
+            sk: l.sk,
+            cs: l.cs,
+            fr: l.fr,
+            es: l.es,
+            pt: l.pt,
+            not_trans: l.not_trans,
+            descripe: l.descripe,
+            label: l.label,
+            file_name: l.file_name,
+            mode_name: l.mode_name,
+            project_id: l.project_id,
+            new_user_id: l.new_user_id,
+            new_en: l.new_en,
+            new_ja: l.new_ja,
+            new_ko: l.new_ko,
+            new_sk: l.new_sk,
+            new_cs: l.new_cs,
+            new_fr: l.new_fr,
+            new_es: l.new_es,
+            new_pt: l.new_pt,
+            new_not_trans: l.new_not_trans,
+            new_descripe: l.new_descripe,
+            new_label: l.new_label,
+            new_file_name: l.new_file_name,
+            new_mode_name: l.new_mode_name,
+            new_project_id: l.new_project_id,
+            status: l.status,
+            create_time: l.create_time,
+            update_time: l.update_time
+        }
+    }
+}
+
+#[derive(SimpleObject, Serialize, Deserialize, Clone)]
 pub struct VOUser {
     pub id: i32,
     pub username: String,
     pub mail: String,
+    pub ticker: i64,
+}
+
+impl From<User> for VOUser{
+    fn from(p: User) -> Self {
+        VOUser{
+            id: p.id,
+            username: p.username,
+            mail: p.mail,
+            ticker: p.update_time.timestamp()
+        }
+    }
 }
 
 const CODE_TOKEN: &str = "CODE_TOKEN_EXPIRE";
@@ -110,6 +164,12 @@ pub enum CustomError {
     TokenError,
     Internal(String),
     MailOrPasswordFail,
+}
+
+impl From<SqlxError> for CustomError {
+    fn from(e: SqlxError) -> Self {
+        CustomError::Internal(format!("{:?}",e))
+    }
 }
 
 impl ErrorExtensions for CustomError {

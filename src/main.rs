@@ -10,10 +10,10 @@ pub mod utils;
 
 use crate::utils::session::Session;
 use actix_cors::Cors;
-use actix_web::{guard, middleware, web, App, HttpResponse, HttpServer, Responder};
+use actix_web::{guard, middleware, web, App, HttpResponse, HttpServer};
 use async_graphql::http::{playground_source, GraphQLPlaygroundConfig};
 use async_graphql::{EmptyMutation, EmptySubscription, Schema};
-use async_graphql_actix_web::{GQLRequest, GQLResponse};
+use async_graphql_actix_web::{Request, Response};
 use config::CONFIG;
 use controller::{gen_schema, query::Query};
 
@@ -21,9 +21,9 @@ type MySchema = Schema<Query, EmptyMutation, EmptySubscription>;
 
 async fn index(
     schema: web::Data<MySchema>,
-    gql_request: GQLRequest,
+    gql_request: Request,
     session: Session,
-) -> GQLResponse {
+) -> Response {
     let mut query = gql_request.into_inner();
     query = query.data(session);
     schema.execute(query).await.into()

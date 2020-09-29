@@ -17,7 +17,7 @@ fn gen_token(user: &VOUser, is_refresh: bool) -> String {
     let now = Utc::now().timestamp();
     let claims = Claims {
         user: user.clone(),
-        is_refresh: is_refresh,
+        is_refresh,
         exp: if is_refresh { now + 60 * 60 * 24 * 7 } else { now + 60 * 60 }
     };
     encode(&Header::default(), &claims, &EncodingKey::from_secret(CONFIG.token_key.as_ref())).unwrap()
