@@ -1,6 +1,6 @@
 use async_graphql::*;
 use crate::service::{SYS_PROJECT_SERVICE, SYS_LANG_SERVICE};
-use crate::domain::vo::{VOProject, VOLang};
+use crate::domain::vo::{VOProject, VOLang, Trans};
 use crate::domain::dto::LanguageSearchType;
 
 pub struct Query;
@@ -25,10 +25,7 @@ impl Query {
         SYS_LANG_SERVICE.page_language(page, page_size, project_id,search,status_type ).await.extend()
     }
 
-    // async fn borrow_from_context_data<'ctx>(
-    //     &self,
-    //     ctx: &'ctx Context<'_>,
-    // ) -> FieldResult<&'ctx String> {
-    //     ctx.data::<String>()
-    // }
+    async fn trans(&self, en: String) -> FieldResult<Trans> {
+        SYS_LANG_SERVICE.trans(en).await.extend()
+    }
 }

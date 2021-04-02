@@ -1,6 +1,7 @@
 mod sys_lang_service;
 mod sys_user_service;
 mod sys_project_service;
+mod translate;
 
 use sys_lang_service::SysLangService;
 use sys_user_service::SysUserService;

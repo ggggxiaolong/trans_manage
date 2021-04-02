@@ -21,6 +21,10 @@ impl Token {
     }
 }
 
+pub struct Trans {
+    pub en: String,
+}
+
 #[derive(SimpleObject)]
 pub struct VOProject {
     pub id: i32,

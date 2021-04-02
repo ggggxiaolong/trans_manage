@@ -15,7 +15,7 @@ impl Default for ApplicationConfig {
         let mut yml_data = String::new();
         File::open(CONFIG_FILE)
             .expect("config.yam file not found")
-            .read_to_string(&mut yml_data);
+            .read_to_string(&mut yml_data).unwrap();
         let doc = YamlLoader::load_from_str(&yml_data).unwrap();
         let server_url = get_cfg(&doc, "server_url", "127.0.0.1:4000");
         let db_url = get_cfg(&doc, "db_url", "tn.db");
