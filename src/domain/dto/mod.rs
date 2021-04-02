@@ -26,15 +26,11 @@ pub struct UpdateLang {
     pub fr: Option<String>,
     pub es: Option<String>,
     pub pt: Option<String>,
-    #[field(name = "not_trans")]
     pub not_trans: Option<i32>,
     pub descripe: Option<String>,
     pub label: Option<String>,
-    #[field(name = "file_name")]
     pub file_name: Option<String>,
-    #[field(name = "project_id")]
     pub project_id: Option<i32>,
-    #[field(name = "mode_name")]
     pub mode_name: Option<String>,
 }
 
@@ -48,14 +44,10 @@ pub struct AddLang {
     pub fr: Option<String>,
     pub es: Option<String>,
     pub pt: Option<String>,
-    #[field(name = "not_trans")]
     pub not_trans: i32,
     pub descripe: Option<String>,
     pub label: Option<String>,
-    #[field(name = "file_name")]
     pub file_name: Option<String>,
-    #[field(name = "project_id")]
     pub project_id: i32,
-    #[field(name = "mode_name")]
     pub mode_name: Option<String>,
 }

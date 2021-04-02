@@ -1,10 +1,9 @@
-use async_graphql::{ErrorExtensions, FieldError};
-use chrono::NaiveDateTime;
-use serde::{Serialize, Deserialize};
-use serde_json::json;
+use crate::domain::domain::{Lang, Project, User};
 use async_graphql::*;
-use crate::domain::domain::{Project, User, Lang};
-use sqlx::{Error as SqlxError};
+use async_graphql::{ErrorExtensions};
+use chrono::NaiveDateTime;
+use serde::{Deserialize, Serialize};
+use sqlx::Error as SqlxError;
 
 // 前端数据
 #[derive(SimpleObject)]
@@ -28,9 +27,9 @@ pub struct VOProject {
     pub name: String,
 }
 
-impl From<Project> for VOProject{
+impl From<Project> for VOProject {
     fn from(p: Project) -> Self {
-        VOProject{
+        VOProject {
             id: p.id,
             name: p.name,
         }
@@ -49,56 +48,35 @@ pub struct VOLang {
     fr: Option<String>,
     es: Option<String>,
     pt: Option<String>,
-    #[field(name="not_trans")]
     not_trans: i32,
     descripe: Option<String>,
     label: Option<String>,
-    #[field(name="file_name")]
     file_name: Option<String>,
-    #[field(name="mode_name")]
     mode_name: Option<String>,
-    #[field(name="project_id")]
     project_id: i32,
-    #[field(name="new_user_id")]
     new_user_id: Option<i32>,
-    #[field(name="new_en")]
     new_en: Option<String>,
-    #[field(name="new_ja")]
     new_ja: Option<String>,
-    #[field(name="new_ko")]
     new_ko: Option<String>,
-    #[field(name="new_sk")]
     new_sk: Option<String>,
-    #[field(name="new_cs")]
     new_cs: Option<String>,
-    #[field(name="new_fr")]
     new_fr: Option<String>,
-    #[field(name="new_es")]
     new_es: Option<String>,
-    #[field(name="new_pt")]
     new_pt: Option<String>,
-    #[field(name="new_not_trans")]
     new_not_trans: Option<i32>,
-    #[field(name="new_descripe")]
     new_descripe: Option<String>,
-    #[field(name="new_label")]
     new_label: Option<String>,
-    #[field(name="new_file_name")]
     new_file_name: Option<String>,
-    #[field(name="new_mode_name")]
     new_mode_name: Option<String>,
-    #[field(name="new_project_id")]
     new_project_id: Option<i32>,
-    status: i32,//0 为最新， 1为更新， 2为新增
-    #[field(name="create_time")]
+    status: i32, //0 为最新， 1为更新， 2为新增
     create_time: NaiveDateTime,
-    #[field(name="update_time")]
     update_time: NaiveDateTime,
 }
 
 impl From<Lang> for VOLang {
     fn from(l: Lang) -> Self {
-        VOLang{
+        VOLang {
             id: l.id,
             user_id: l.user_id,
             en: l.en,
@@ -132,7 +110,7 @@ impl From<Lang> for VOLang {
             new_project_id: l.new_project_id,
             status: l.status,
             create_time: l.create_time,
-            update_time: l.update_time
+            update_time: l.update_time,
         }
     }
 }
@@ -145,13 +123,13 @@ pub struct VOUser {
     pub ticker: i64,
 }
 
-impl From<User> for VOUser{
+impl From<User> for VOUser {
     fn from(p: User) -> Self {
-        VOUser{
+        VOUser {
             id: p.id,
             username: p.username,
             mail: p.mail,
-            ticker: p.update_time.timestamp()
+            ticker: p.update_time.timestamp(),
         }
     }
 }
@@ -160,24 +138,31 @@ const CODE_TOKEN: &str = "CODE_TOKEN_EXPIRE";
 const CODE_INTERNAL: &str = "CODE_SERVER_INTERNAL_ERROR";
 const CODE_MAIL_OR_PASSWORD_FAIL: &str = "CODE_MAIL_OR_PASSWORD_FAIL";
 
+#[derive(Debug, Error)]
 pub enum CustomError {
+    #[error("CODE_TOKEN_EXPIRE")]
     TokenError,
+    #[error("CODE_SERVER_INTERNAL_ERROR")]
     Internal(String),
+    #[error("CODE_MAIL_OR_PASSWORD_FAIL")]
     MailOrPasswordFail,
 }
 
 impl From<SqlxError> for CustomError {
     fn from(e: SqlxError) -> Self {
-        CustomError::Internal(format!("{:?}",e))
+        CustomError::Internal(format!("{:?}", e))
     }
 }
 
 impl ErrorExtensions for CustomError {
-    fn extend(&self) -> FieldError {
-        match self {
-            CustomError::TokenError => FieldError(CODE_TOKEN.to_string(), None),
-            CustomError::Internal(message) => FieldError(CODE_INTERNAL.to_string(), Some(json!({"info": message}))),
-            CustomError::MailOrPasswordFail => FieldError(CODE_MAIL_OR_PASSWORD_FAIL.to_string(), None),
-        }
+    fn extend(&self) -> Error {
+        Error::new(format!("{}", self)).extend_with(|_err, e| match self {
+            CustomError::TokenError => e.set("code", CODE_TOKEN.to_string()),
+            CustomError::Internal(message) => {
+                e.set("code", CODE_INTERNAL.to_string());
+                e.set("info", message.to_string());
+            }
+            CustomError::MailOrPasswordFail => e.set("code", CODE_MAIL_OR_PASSWORD_FAIL.to_string()),
+        })
     }
 }

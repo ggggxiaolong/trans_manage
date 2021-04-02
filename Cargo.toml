@@ -8,40 +8,39 @@ edition = "2018"
 
 [dependencies]
 #serde and base types
-serde = { version = "1.0.116", features = ["derive"] }
-serde_json = "1.0.57"
-chrono = { version = "0.4.15", features = ["serde"] }
+serde = { version = "1.0.125", features = ["derive"] }
+serde_json = "1.0.64"
+chrono = { version = "0.4.19", features = ["serde"] }
 lazy_static = "1.4.0"
 #log
-env_logger = "0.7.1"
+env_logger = "0.8.3"
 #runtime
 # tokio = { version = "0.2", features = ["full"] }
-async-trait = "0.1.40"
+async-trait = "0.1.48"
 #sqlx orm dep
-sqlx = { version = "0.4.0-beta.1", features = ["sqlite", "chrono" ] }
+sqlx = { version = "0.4.2", features = ["sqlite", "chrono", "runtime-actix-rustls" ] }
 
 #web server
-actix-web = "3.0.2"
-actix-http = "2.0.0"
-actix-rt = "1.1.1"
-actix-cors = "0.4.0"
+actix-web = "3.3.2"
+actix-cors = "0.5.4"
 
+thiserror = "1.0.24"
 #redis
 # redis = "0.17.0"
 
 #jwt
-jsonwebtoken = "7"
-bcrypt="0.8.2"
+jsonwebtoken = "7.2.0"
+bcrypt="0.9.0"
 #uuid
 #uuid = "0.8"
-md5 = "0.7.0"
+# md5 = "0.7.0"
 
-yaml-rust = "0.4"
+yaml-rust = "0.4.5"
 
-async-graphql = "2.0.0-alpha.21"
-async-graphql-actix-web = "2.0.0-alpha.21"
-futures = "0.3.5"
-once_cell = "1.4.1"
+async-graphql = {version = "2.7.2", features=["chrono"]}
+async-graphql-actix-web = "2.7.2"
+futures = "0.3.13"
+once_cell = "1.7.2"
 
 [dev-dependencies]
 fast_log = "1.2.3"
