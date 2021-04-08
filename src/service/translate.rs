@@ -1,15 +1,15 @@
-use serde_json::Value;
-use regex::Regex;
 use actix_web::client;
+use regex::Regex;
+use serde_json::Value;
 
 lazy_static! {
-    static ref REp: Regex= Regex::new(r"&#096;").unwrap();
-    static ref REbreak: Regex= Regex::new("\n").unwrap();
-    static ref REbreakBack: Regex= Regex::new(r"\{break\}").unwrap();
-    static ref REstr: Regex= Regex::new(r"%(?P<i>\d)\$s").unwrap();
-    static ref REnum: Regex= Regex::new(r"%(?P<i>\d)\$d").unwrap();
-    static ref REstrBack: Regex= Regex::new(r"\{name(?P<i>\d)\}").unwrap();
-    static ref REnumBack: Regex= Regex::new(r"\{number(?P<i>\d)\}").unwrap();
+    static ref REp: Regex = Regex::new(r"&#096;").unwrap();
+    static ref REbreak: Regex = Regex::new("\n").unwrap();
+    static ref REbreakBack: Regex = Regex::new(r"\{break\}").unwrap();
+    static ref REstr: Regex = Regex::new(r"%(?P<i>\d)\$s").unwrap();
+    static ref REnum: Regex = Regex::new(r"%(?P<i>\d)\$d").unwrap();
+    static ref REstrBack: Regex = Regex::new(r"\{name(?P<i>\d)\}").unwrap();
+    static ref REnumBack: Regex = Regex::new(r"\{number(?P<i>\d)\}").unwrap();
 }
 
 fn before_trans(source: &str) -> String {
@@ -17,7 +17,7 @@ fn before_trans(source: &str) -> String {
     let after = REnum.replace_all(&after, "{number${i}}").into_owned();
     let after = REp.replace_all(&after, "'").into_owned();
     let after = REbreak.replace_all(&after, "{break}").into_owned();
-    return after
+    return after;
 }
 
 fn after_trans(source: &str) -> String {
@@ -25,7 +25,7 @@ fn after_trans(source: &str) -> String {
     let after = REstrBack.replace_all(&after, "%${i}$$s").into_owned();
     let after = REnumBack.replace_all(&after, "%${i}$$d").into_owned();
     let after = REbreakBack.replace_all(&after, "\n");
-    return after.into_owned()
+    return after.into_owned();
 }
 
 fn compute_checksum(term: &str) -> (u32, u32) {
@@ -58,15 +58,14 @@ fn url(term: &str, from: &str, to: &str) -> String {
 async fn make_request(term: &str, from: &str, to: &str) -> Option<String> {
     let api_url = url(term, from, to);
     println!("{}", api_url);
-    let client = client::Client::new();
-    let res = client.get(&api_url)
+    let res = reqwest::Client::new().get(&api_url)
         .header("User-Agent"," Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36")
         .header("Content-Type","application/json; charset=UTF-8")
         .header("Host","translate.google.cn")
         .send().await;
 
     match res {
-        Ok(e) => match e.json() {
+        Ok(e) => match e.text().await {
             Ok(i) => Some(i),
             _ => None,
         },
@@ -76,7 +75,6 @@ async fn make_request(term: &str, from: &str, to: &str) -> Option<String> {
         }
     }
 }
-
 
 pub async fn translate(text: &str, from: &str, to: &str) -> String {
     let body = make_request(&before_trans(text), from, to).await;
@@ -108,7 +106,7 @@ pub async fn translate(text: &str, from: &str, to: &str) -> String {
 
 #[cfg(test)]
 mod tests {
-    use crate::service::translate::{before_trans, after_trans};
+    use crate::service::translate::{after_trans, before_trans};
 
     #[test]
     fn test_reg() {
