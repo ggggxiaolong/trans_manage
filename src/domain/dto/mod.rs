@@ -15,7 +15,7 @@ impl Default for LanguageSearchType {
     }
 }
 
-#[derive(SimpleObject)]
+#[derive(InputObject)]
 pub struct UpdateLang {
     pub id: i32,
     pub en: Option<String>,
@@ -34,7 +34,7 @@ pub struct UpdateLang {
     pub mode_name: Option<String>,
 }
 
-#[derive(SimpleObject)]
+#[derive(InputObject)]
 pub struct AddLang {
     pub en: String,
     pub ja: Option<String>,

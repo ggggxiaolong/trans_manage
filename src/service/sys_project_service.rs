@@ -1,6 +1,6 @@
 use crate::dao::DBPool;
-use crate::domain::domain::{Project, sql};
-use crate::domain::vo::{VOProject, CustomError};
+use crate::domain::domain::{sql, Project};
+use crate::domain::vo::{CustomError, VOProject};
 
 pub struct SysProjectService {}
 
@@ -23,7 +23,11 @@ impl SysProjectService {
         sqlx::query("update lang set fr = (select new_fr from tem_lang where tem_lang.id = lang.id) where new_fr is not null and status != 0 and project_id = {$1}").bind(project_id).execute(&mut tx).await?;
         sqlx::query("update lang set es = (select new_es from tem_lang where tem_lang.id = lang.id) where new_es is not null and status != 0 and project_id = {$1}").bind(project_id).execute(&mut tx).await?;
         sqlx::query("update lang set pt = (select new_pt from tem_lang where tem_lang.id = lang.id) where new_pt is not null and status != 0 and project_id = {$1}").bind(project_id).execute(&mut tx).await?;
-        sqlx::query("update lang set user_id = {$1} where status != 0 and project_id = {$2}").bind(user_id).bind(project_id).execute(&mut tx).await?;
+        sqlx::query("update lang set user_id = {$1} where status != 0 and project_id = {$2}")
+            .bind(user_id)
+            .bind(project_id)
+            .execute(&mut tx)
+            .await?;
         sqlx::query("update lang set not_trans = (select new_not_trans from tem_lang where tem_lang.id = lang.id) where new_not_trans is not null and status != 0 and project_id = {}").bind(project_id).execute(&mut tx).await?;
         sqlx::query("update lang set descripe = (select new_descripe from tem_lang where tem_lang.id = lang.id) where new_descripe is not null and status != 0 and project_id = {}").bind(project_id).execute(&mut tx).await?;
         sqlx::query("update lang set label = (select new_label from tem_lang where tem_lang.id = lang.id) where new_label is not null and status != 0 and project_id = {}").bind(project_id).execute(&mut tx).await?;

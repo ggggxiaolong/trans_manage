@@ -36,6 +36,7 @@ async fn gql_playgound() -> HttpResponse {
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     std::env::set_var("RUST_LOG", "actix_web=info");
+    println!("run on http://{}/graphql", &CONFIG.server_url);
     env_logger::init();
     dao::DBPool::init_pool(dao::DBPool::create_pool().await);
     HttpServer::new(move || {

@@ -1,6 +1,6 @@
-use sqlx::sqlite::SqlitePool;
 use crate::config::CONFIG;
 use once_cell::sync::OnceCell;
+use sqlx::sqlite::SqlitePool;
 
 static SQLITE_POOL: OnceCell<SqlitePool> = OnceCell::new();
 
@@ -21,8 +21,7 @@ impl DBPool {
 }
 
 #[cfg(test)]
-mod test {
-}
+mod test {}
 
 pub trait SqlGen {
     fn table_name() -> String;

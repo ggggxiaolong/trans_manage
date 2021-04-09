@@ -88,13 +88,13 @@ pub async fn translate(text: &str, from: &str, to: &str) -> String {
                         for part3 in part2 {
                             if let Value::Array(mut part4) = part3 {
                                 if part4.len() > 1 {
-                                    if let Value::String(part5) = part4.remove(0){
+                                    if let Value::String(part5) = part4.remove(0) {
                                         text += &part5;
                                     }
                                 }
                             }
                         }
-                    }   
+                    }
                 }
             }
         } else {

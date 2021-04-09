@@ -1,6 +1,6 @@
 use crate::domain::domain::{Lang, Project, User};
+use async_graphql::ErrorExtensions;
 use async_graphql::*;
-use async_graphql::{ErrorExtensions};
 use chrono::NaiveDateTime;
 use serde::{Deserialize, Serialize};
 use sqlx::Error as SqlxError;
@@ -127,6 +127,23 @@ pub struct VOUser {
     pub ticker: i64,
 }
 
+impl VOUser {
+    pub fn is_not_default(&self) -> bool {
+        self.id != -1
+    }
+}
+
+impl Default for VOUser {
+    fn default() -> Self {
+        VOUser {
+            id: -1,
+            username: "Test".to_string(),
+            mail: "test@test.test".to_string(),
+            ticker: 0,
+        }
+    }
+}
+
 impl From<User> for VOUser {
     fn from(p: User) -> Self {
         VOUser {
@@ -166,7 +183,9 @@ impl ErrorExtensions for CustomError {
                 e.set("code", CODE_INTERNAL.to_string());
                 e.set("info", message.to_string());
             }
-            CustomError::MailOrPasswordFail => e.set("code", CODE_MAIL_OR_PASSWORD_FAIL.to_string()),
+            CustomError::MailOrPasswordFail => {
+                e.set("code", CODE_MAIL_OR_PASSWORD_FAIL.to_string())
+            }
         })
     }
 }

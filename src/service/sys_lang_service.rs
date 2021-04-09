@@ -1,7 +1,7 @@
-use crate::service::translate::translate;
-use crate::domain::domain::{sql};
+use crate::domain::domain::sql;
 use crate::domain::dto::LanguageSearchType;
-use crate::domain::vo::{CustomError, VOLang, Trans};
+use crate::domain::vo::{CustomError, Trans, VOLang};
+use crate::{domain::dto::AddLang, service::translate::translate};
 use async_graphql::*;
 
 pub struct SysLangService {}
@@ -21,7 +21,9 @@ impl SysLangService {
     pub async fn trans(&self, en: String) -> Result<Trans, CustomError> {
         Ok(Trans { en: en })
     }
-    pub async fn add(&self) {}
+    pub async fn add(&self, add_lang: AddLang, user_id: i32)-> Result<i64, CustomError> {
+        sql::lang::add_lang(add_lang, user_id).await.map_err(|e|e.into())
+    }
     pub async fn update(&self) {}
     pub async fn update_multiple(&self) {}
 }
